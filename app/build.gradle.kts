@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.ksp)
+    alias(libs.plugins.junit5.android)
 }
 
 android {
@@ -63,6 +64,8 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.hilt.work)
+    ksp(libs.hilt.androidx.compiler)
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)
@@ -72,6 +75,7 @@ dependencies {
     implementation(libs.retrofit.kotlin.serialization)
     implementation(libs.okhttp)
     implementation(libs.okhttp.logging)
+    implementation(libs.ktor.client.okhttp)
     implementation(libs.serialization.json)
 
     implementation(libs.supabase.auth)
@@ -82,6 +86,7 @@ dependencies {
     implementation(libs.androidx.work.runtime.ktx)
     implementation(libs.plaid)
     implementation(libs.vico.compose)
+    implementation(libs.vico.compose.m3)
     implementation(libs.coil.compose)
     implementation(libs.androidx.security.crypto)
     implementation(libs.androidx.biometric)
