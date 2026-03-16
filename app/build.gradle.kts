@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace = "com.vaultly"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.vaultly"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -41,6 +41,9 @@ android {
     buildFeatures {
         compose = true
         buildConfig = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
     packaging { resources.excludes += "/META-INF/{AL2.0,LGPL2.1}" }
 
@@ -92,6 +95,8 @@ dependencies {
     implementation(libs.androidx.biometric)
     implementation(libs.timber)
     implementation(libs.coroutines.android)
+    implementation(libs.kotlinx.datetime)
+    implementation(libs.coroutines.core)
 
     testImplementation(libs.junit5.api)
     testRuntimeOnly(libs.junit5.engine)
