@@ -1,6 +1,5 @@
 package com.vaultly.domain.model
 
-import androidx.compose.ui.graphics.Color
 import java.time.LocalDate
 
 data class Transaction(
@@ -32,13 +31,13 @@ data class Budget(
 
 data class MonthlyTotal(val month: String, val total: Double)
 
-enum class AppCategory(val displayName: String, val emoji: String, val color: Color) {
-    FOOD("Food & Dining", "🍔", Color(0xFFEF4444)),
-    TRANSPORT("Transport", "🚗", Color(0xFF3B82F6)),
-    SHOPPING("Shopping", "🛍️", Color(0xFF8B5CF6)),
-    ENTERTAINMENT("Entertainment", "🎮", Color(0xFFF59E0B)),
-    UTILITIES("Utilities", "⚡", Color(0xFF10B981)),
-    HEALTHCARE("Healthcare", "🏥", Color(0xFF06B6D4)),
-    INCOME("Income", "💰", Color(0xFF22C55E)),
-    OTHER("Other", "📦", Color(0xFF6B7280))
+enum class AppCategory(val displayName: String, val emoji: String, val colorHex: Long) {
+    FOOD("Food & Dining", "🍔", 0xFFEF4444L),
+    TRANSPORT("Transport", "🚗", 0xFF3B82F6L),
+    SHOPPING("Shopping", "🛍️", 0xFF8B5CF6L),
+    ENTERTAINMENT("Entertainment", "🎮", 0xFFF59E0BL),
+    UTILITIES("Utilities", "⚡", 0xFF10B981L),
+    HEALTHCARE("Healthcare", "🏥", 0xFF06B6D4L),
+    INCOME("Income", "💰", 0xFF22C55EL),
+    OTHER("Other", "📦", 0xFF6B7280L)
 }
