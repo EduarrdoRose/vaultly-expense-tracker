@@ -1,0 +1,5 @@
+-keep class dagger.hilt.** { *; }
+-keep class * extends androidx.room.RoomDatabase
+-keep class kotlinx.serialization.** { *; }
+-keep class retrofit2.** { *; }
+-dontwarn org.conscrypt.**

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Vaultly</string>
+    <string name="syncing">Sincronizando transacciones…</string>
+    <string name="auth_required">Inicia sesión para continuar</string>
+</resources>
