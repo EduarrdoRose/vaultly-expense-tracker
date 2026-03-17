@@ -1,13 +1,13 @@
 create extension if not exists pgcrypto;
 
-create table public.profiles (
+create table if not exists public.profiles (
   id uuid references auth.users primary key,
   full_name text,
   avatar_url text,
   created_at timestamptz default now()
 );
 
-create table public.plaid_items (
+create table if not exists public.plaid_items (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references auth.users not null,
   institution_id text not null,
@@ -18,7 +18,7 @@ create table public.plaid_items (
   created_at timestamptz default now()
 );
 
-create table public.accounts (
+create table if not exists public.accounts (
   id text primary key,
   user_id uuid references auth.users not null,
   plaid_item_id uuid references public.plaid_items,
@@ -33,7 +33,7 @@ create table public.accounts (
   updated_at timestamptz default now()
 );
 
-create table public.transactions (
+create table if not exists public.transactions (
   id text primary key,
   user_id uuid references auth.users not null,
   account_id text references public.accounts,
@@ -52,7 +52,7 @@ create table public.transactions (
   created_at timestamptz default now()
 );
 
-create table public.budgets (
+create table if not exists public.budgets (
   id uuid primary key default gen_random_uuid(),
   user_id uuid references auth.users not null,
   category text not null,
@@ -67,12 +67,27 @@ alter table public.accounts enable row level security;
 alter table public.transactions enable row level security;
 alter table public.budgets enable row level security;
 
-create policy "users see own profiles" on public.profiles for all using (auth.uid() = id);
-create policy "users see own items" on public.plaid_items for all using (auth.uid() = user_id);
-create policy "users see own accounts" on public.accounts for all using (auth.uid() = user_id);
-create policy "users see own transactions" on public.transactions for all using (auth.uid() = user_id);
-create policy "users see own budgets" on public.budgets for all using (auth.uid() = user_id);
+drop policy if exists "users see own profiles" on public.profiles;
+drop policy if exists "users see own items" on public.plaid_items;
+drop policy if exists "users see own accounts" on public.accounts;
+drop policy if exists "users see own transactions" on public.transactions;
+drop policy if exists "users see own budgets" on public.budgets;
 
-create index idx_transactions_user_date on public.transactions(user_id, date desc);
-create index idx_transactions_category on public.transactions(user_id, custom_category);
-create index idx_accounts_user on public.accounts(user_id);
+create policy "users see own profiles" on public.profiles
+  for all using (auth.uid() = id) with check (auth.uid() = id);
+
+create policy "users see own items" on public.plaid_items
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create policy "users see own accounts" on public.accounts
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create policy "users see own transactions" on public.transactions
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create policy "users see own budgets" on public.budgets
+  for all using (auth.uid() = user_id) with check (auth.uid() = user_id);
+
+create index if not exists idx_transactions_user_date on public.transactions(user_id, date desc);
+create index if not exists idx_transactions_category on public.transactions(user_id, custom_category);
+create index if not exists idx_accounts_user on public.accounts(user_id);
