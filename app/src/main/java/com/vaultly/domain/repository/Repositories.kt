@@ -14,19 +14,6 @@ interface TransactionRepository {
     fun getMonthlyTotals(months: Int): Flow<List<MonthlyTotal>>
 }
 
-interface AuthRepository {
-    fun authState(): Flow<AuthState>
-    suspend fun signIn(email: String, password: String): Result<Unit>
-    suspend fun signOut(): Result<Unit>
-}
-
-sealed class AuthState {
-    data object Loading : AuthState()
-    data object Unauthenticated : AuthState()
-    data class Authenticated(val userId: String, val email: String) : AuthState()
-    data class Error(val message: String) : AuthState()
-}
-
 interface PlaidRepository {
     suspend fun getLinkToken(): Result<String>
     suspend fun exchangeToken(publicToken: String): Result<Unit>
