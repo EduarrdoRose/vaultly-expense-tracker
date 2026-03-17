@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import com.vaultly.data.local.entity.AccountEntity
 import com.vaultly.data.local.entity.BudgetEntity
 import com.vaultly.data.local.entity.TransactionEntity
@@ -11,23 +12,37 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TransactionDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertAll(items: List<TransactionEntity>)
+    @Upsert
+    suspend fun upsertAll(transactions: List<TransactionEntity>)
 
     @Query("SELECT * FROM transactions WHERE date BETWEEN :startDate AND :endDate ORDER BY date DESC")
     fun getByDateRange(startDate: String, endDate: String): Flow<List<TransactionEntity>>
 
+    @Query("SELECT * FROM transactions WHERE userId = :userId ORDER BY date DESC")
+    fun getByUserId(userId: String): Flow<List<TransactionEntity>>
+
     @Query("SELECT * FROM transactions WHERE customCategory = :category")
     fun getByCategory(category: String): Flow<List<TransactionEntity>>
+
+    @Query("UPDATE transactions SET customCategory = :category WHERE id = :id")
+    suspend fun updateCategory(id: String, category: String)
+
+    @Query("UPDATE transactions SET note = :note WHERE id = :id")
+    suspend fun updateNote(id: String, note: String)
 
     @Query("SELECT * FROM transactions WHERE syncStatus != 'SYNCED'")
     suspend fun getPendingSync(): List<TransactionEntity>
 
-    @Query("SELECT customCategory as category, SUM(amount) as total FROM transactions GROUP BY customCategory")
-    fun getTotalByCategory(): Flow<List<CategoryTotalProjection>>
+    @Query("SELECT customCategory as category, SUM(amount) as total FROM transactions WHERE date BETWEEN :start AND :end GROUP BY customCategory")
+    fun getTotalByCategory(start: String, end: String): Flow<List<CategoryTotal>>
+
+    @Query("SELECT strftime('%Y-%m', date) as month, SUM(amount) as total FROM transactions WHERE date >= :since GROUP BY month ORDER BY month ASC")
+    fun getMonthlyTotals(since: String): Flow<List<MonthlyTotalRow>>
 }
 
-data class CategoryTotalProjection(val category: String?, val total: Double)
+data class CategoryTotal(val category: String?, val total: Double)
+
+data class MonthlyTotalRow(val month: String, val total: Double)
 
 @Dao
 interface AccountDao {

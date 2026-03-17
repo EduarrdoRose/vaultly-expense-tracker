@@ -2,6 +2,8 @@ package com.vaultly.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.vaultly.domain.model.Transaction
+import java.time.LocalDate
 
 @Entity(tableName = "transactions")
 data class TransactionEntity(
@@ -50,4 +52,12 @@ data class PlaidItemEntity(
     val institutionId: String,
     val institutionName: String,
     val status: String,
+)
+
+
+fun TransactionEntity.toDomain() = Transaction(
+    id = id, userId = userId, accountId = accountId,
+    merchantName = merchantName, amount = amount,
+    date = LocalDate.parse(date), customCategory = customCategory,
+    note = note, pending = pending
 )
