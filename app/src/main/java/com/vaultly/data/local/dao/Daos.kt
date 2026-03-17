@@ -33,7 +33,7 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE syncStatus != 'SYNCED'")
     suspend fun getPendingSync(): List<TransactionEntity>
 
-    @Query("SELECT customCategory as category, SUM(amount) as total FROM transactions WHERE date BETWEEN :start AND :end GROUP BY customCategory")
+    @Query("SELECT customCategory as category, SUM(amount) as total FROM transactions WHERE date BETWEEN :start AND :end GROUP BY customCategory ORDER BY total DESC")
     fun getTotalByCategory(start: String, end: String): Flow<List<CategoryTotal>>
 
     @Query("SELECT strftime('%Y-%m', date) as month, SUM(amount) as total FROM transactions WHERE date >= :since GROUP BY month ORDER BY month ASC")

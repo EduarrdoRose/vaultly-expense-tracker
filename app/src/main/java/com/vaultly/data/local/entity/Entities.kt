@@ -10,15 +10,20 @@ data class TransactionEntity(
     @PrimaryKey val id: String,
     val userId: String,
     val accountId: String,
-    val plaidCategory: List<String>,
-    val customCategory: String?,
-    val merchantName: String?,
+    val plaidCategory: List<String> = emptyList(),
+    val customCategory: String? = null,
+    val merchantName: String? = null,
     val amount: Double,
-    val currencyCode: String,
+    val currencyCode: String = "USD",
     val date: String,
-    val note: String?,
-    val pending: Boolean,
-    val syncStatus: SyncStatus,
+    val authorizedDate: String? = null,
+    val paymentChannel: String? = null,
+    val logoUrl: String? = null,
+    val website: String? = null,
+    val note: String? = null,
+    val pending: Boolean = false,
+    val createdAt: String? = null,
+    val syncStatus: SyncStatus = SyncStatus.SYNCED,
 )
 
 enum class SyncStatus { SYNCED, PENDING, FAILED }
@@ -28,12 +33,14 @@ data class AccountEntity(
     @PrimaryKey val id: String,
     val userId: String,
     val name: String,
-    val officialName: String?,
-    val type: String?,
-    val subtype: String?,
+    val officialName: String? = null,
+    val type: String? = null,
+    val subtype: String? = null,
     val currentBalance: Double,
-    val availableBalance: Double?,
-    val mask: String?,
+    val availableBalance: Double? = null,
+    val currencyCode: String = "USD",
+    val mask: String? = null,
+    val updatedAt: String? = null,
 )
 
 @Entity(tableName = "budgets")
@@ -42,7 +49,8 @@ data class BudgetEntity(
     val userId: String,
     val category: String,
     val amount: Double,
-    val period: String,
+    val period: String = "monthly",
+    val createdAt: String? = null,
 )
 
 @Entity(tableName = "plaid_items")
@@ -52,8 +60,8 @@ data class PlaidItemEntity(
     val institutionId: String,
     val institutionName: String,
     val status: String,
+    val createdAt: String? = null,
 )
-
 
 fun TransactionEntity.toDomain() = Transaction(
     id = id, userId = userId, accountId = accountId,
