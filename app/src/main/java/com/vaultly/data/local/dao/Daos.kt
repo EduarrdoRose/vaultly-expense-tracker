@@ -33,11 +33,11 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE syncStatus != 'SYNCED'")
     suspend fun getPendingSync(): List<TransactionEntity>
 
-    @Query("SELECT customCategory as category, SUM(amount) as total FROM transactions WHERE date BETWEEN :start AND :end GROUP BY customCategory ORDER BY total DESC")
-    fun getTotalByCategory(start: String, end: String): Flow<List<CategoryTotal>>
+    @Query("SELECT customCategory as category, SUM(amount) as total FROM transactions WHERE userId = :userId AND date BETWEEN :start AND :end GROUP BY customCategory ORDER BY total DESC")
+    fun getTotalByCategory(userId: String, start: String, end: String): Flow<List<CategoryTotal>>
 
-    @Query("SELECT strftime('%Y-%m', date) as month, SUM(amount) as total FROM transactions WHERE date >= :since GROUP BY month ORDER BY month ASC")
-    fun getMonthlyTotals(since: String): Flow<List<MonthlyTotalRow>>
+    @Query("SELECT strftime('%Y-%m', date) as month, SUM(amount) as total FROM transactions WHERE userId = :userId AND date >= :since GROUP BY month ORDER BY month ASC")
+    fun getMonthlyTotals(userId: String, since: String): Flow<List<MonthlyTotalRow>>
 }
 
 data class CategoryTotal(val category: String?, val total: Double)
@@ -49,8 +49,8 @@ interface AccountDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(items: List<AccountEntity>)
 
-    @Query("SELECT * FROM accounts")
-    fun getAll(): Flow<List<AccountEntity>>
+    @Query("SELECT * FROM accounts WHERE userId = :userId ORDER BY name ASC")
+    fun getAll(userId: String): Flow<List<AccountEntity>>
 
     @Query("SELECT * FROM accounts WHERE id = :id")
     suspend fun getById(id: String): AccountEntity?
@@ -61,11 +61,11 @@ interface BudgetDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsert(item: BudgetEntity)
 
-    @Query("SELECT * FROM budgets")
-    fun getAll(): Flow<List<BudgetEntity>>
+    @Query("SELECT * FROM budgets WHERE userId = :userId")
+    fun getAll(userId: String): Flow<List<BudgetEntity>>
 
-    @Query("SELECT b.category as category, b.amount as budgetAmount, COALESCE(SUM(t.amount), 0) as spentAmount FROM budgets b LEFT JOIN transactions t ON t.customCategory = b.category GROUP BY b.category, b.amount")
-    fun getBudgetWithSpending(): Flow<List<BudgetSpendingProjection>>
+    @Query("SELECT b.category as category, b.amount as budgetAmount, COALESCE(SUM(t.amount), 0) as spentAmount FROM budgets b LEFT JOIN transactions t ON t.customCategory = b.category AND t.userId = :userId WHERE b.userId = :userId GROUP BY b.category, b.amount")
+    fun getBudgetWithSpending(userId: String): Flow<List<BudgetSpendingProjection>>
 }
 
 data class BudgetSpendingProjection(val category: String, val budgetAmount: Double, val spentAmount: Double)

@@ -2,6 +2,7 @@ package com.vaultly.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 import com.vaultly.domain.model.Transaction
 import java.time.LocalDate
 
@@ -69,3 +70,12 @@ fun TransactionEntity.toDomain() = Transaction(
     date = LocalDate.parse(date), customCategory = customCategory,
     note = note, pending = pending
 )
+
+
+class Converters {
+    @TypeConverter
+    fun fromStringList(list: List<String>): String = list.joinToString(",")
+
+    @TypeConverter
+    fun toStringList(value: String): List<String> = if (value.isBlank()) emptyList() else value.split(",")
+}
