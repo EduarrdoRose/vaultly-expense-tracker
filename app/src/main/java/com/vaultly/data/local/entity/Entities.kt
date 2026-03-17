@@ -78,4 +78,10 @@ class Converters {
 
     @TypeConverter
     fun toStringList(value: String): List<String> = if (value.isBlank()) emptyList() else value.split(",")
+
+    @TypeConverter
+    fun fromSync(value: SyncStatus): String = value.name
+
+    @TypeConverter
+    fun toSync(value: String): SyncStatus = SyncStatus.valueOf(value)
 }
