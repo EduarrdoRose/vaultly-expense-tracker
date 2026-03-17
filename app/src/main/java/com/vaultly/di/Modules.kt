@@ -6,8 +6,10 @@ import com.vaultly.BuildConfig
 import com.vaultly.data.local.AppDatabase
 import com.vaultly.data.local.dao.TransactionDao
 import com.vaultly.data.remote.plaid.PlaidLinkManager
+import com.vaultly.data.repository.AuthRepositoryImpl
 import com.vaultly.data.repository.TransactionRepositoryImpl
 import com.vaultly.domain.repository.PlaidRepository
+import com.vaultly.domain.repository.auth.AuthRepository
 import com.vaultly.domain.repository.TransactionRepository
 import dagger.Module
 import dagger.Provides
@@ -56,6 +58,9 @@ object NetworkModule {
 object RepositoryModule {
     @Provides
     fun provideTransactionRepository(impl: TransactionRepositoryImpl): TransactionRepository = impl
+
+    @Provides
+    fun provideAuthRepository(impl: AuthRepositoryImpl): AuthRepository = impl
 }
 
 @Module

@@ -41,3 +41,11 @@ enum class AppCategory(val displayName: String, val emoji: String, val colorHex:
     INCOME("Income", "💰", 0xFF22C55EL),
     OTHER("Other", "📦", 0xFF6B7280L)
 }
+
+
+sealed class AuthState {
+    object Loading : AuthState()
+    object Unauthenticated : AuthState()
+    data class Authenticated(val userId: String, val email: String) : AuthState()
+    data class Error(val message: String) : AuthState()
+}
